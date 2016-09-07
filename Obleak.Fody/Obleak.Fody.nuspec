@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Obleak.Fody</id>
+    <version>$version$</version>
+    <authors>syrus</authors>
+    <owners>syrus</owners>
+    <licenseUrl>https://github.com/Syrus666/Obleak.Fody/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Syrus666/Obleak.Fody/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Fody weaver used to manage disposables returned from calls to IObservable.Subscribe() in a composite disposable to ensure they're cleaned up when an object is disposed</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>Fody Rx</tags>
+    <dependencies>
+      <dependency id="Fody" version="1.0" />
+	  <dependency id="Rx-Core" version="2.2.5" />
+	  <dependency id="Rx-Interfaces" version="2.2.5" />
+    </dependencies>
+  </metadata>
+  <files>
+	<file src="bin\Debug\Obleak.Fody.Core.dll" target="lib\net45" />
+  </files>
+</package>

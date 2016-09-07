@@ -1,0 +1,13 @@
+packages/
+*.nupkg
+*.suo
+*.userprefs
+*.user
+Obleak.Fody/bin/
+Obleak.Fody/obj/
+Obleak.Fody.Core/bin/
+Obleak.Fody.Core/obj/
+Obleak.Fody.Test/bin/
+Obleak.Fody.Test/obj/
+Weavers/bin/Weavers.dll
+Weavers/bin/Weavers.pdb
