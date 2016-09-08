@@ -18,6 +18,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="bin\Debug\Obleak.Fody.dll" target="" />
 	<file src="bin\Debug\Obleak.Fody.Core.dll" target="lib\net45" />
   </files>
 </package>

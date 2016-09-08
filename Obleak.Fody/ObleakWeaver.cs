@@ -31,19 +31,14 @@ namespace Obleak.Fody
             LogInfo("Obleak weaving");
 
             // Validate we have the dependencies we need
-            var rxCore = ModuleDefinition.AssemblyReferences.Where(x => x.Name == "System.Reactive.Core").OrderByDescending(x => x.Version).FirstOrDefault();
-            if (rxCore == null)
-            {
-                LogError("Could not find assembly: System.Reactive.Core (" + string.Join(", ", ModuleDefinition.AssemblyReferences.Select(x => x.Name)) + ")");
-                return;
-            }
+            var rxCore = ModuleDefinition.FindAssembly("System.Reactive.Core", LogError);
+            if (rxCore == null) return;
 
-            var mscorlib = ModuleDefinition.AssemblyReferences.Where(x => x.Name == "mscorlib").OrderByDescending(x => x.Version).FirstOrDefault();
-            if (mscorlib == null)
-            {
-                LogError("Could not find assembly: System (" + string.Join(", ", ModuleDefinition.AssemblyReferences.Select(x => x.Name)) + ")");
-                return;
-            }
+            var mscorlib = ModuleDefinition.FindAssembly("mscorlib", LogError);
+            if (mscorlib == null) return;
+
+            var obleakCore = ModuleDefinition.FindAssembly("Obleak.Fody.Core", LogError);
+            if (obleakCore == null) return;
 
             // Get the IDisposable type
             var disposableType = new TypeReference("System", "IDisposable", ModuleDefinition, mscorlib);
@@ -54,14 +49,6 @@ namespace Obleak.Fody
             if (compositeDisposableTypeResolved == null) throw new Exception("compositeDisposableTypeResolved is null");
             var compositeDisposableCtor = ModuleDefinition.Import(compositeDisposableTypeResolved.Methods.Single(m => m.IsConstructor && !m.HasParameters));
             var compositeDisposableDisposeMethod = ModuleDefinition.Import(compositeDisposableTypeResolved.Methods.Single(m => m.Name == "Dispose"));
-
-            // Get the obleak core and attribute
-            var obleakCore = ModuleDefinition.AssemblyReferences.Where(x => x.Name == "Obleak.Fody.Core").OrderByDescending(x => x.Version).FirstOrDefault();
-            if (obleakCore == null)
-            {
-                LogInfo("Could not find assembly: Obleak.Fody.Core (" + string.Join(", ", ModuleDefinition.AssemblyReferences.Select(x => x.Name)) + ")");
-                return;
-            }
 
             var obleakAttribute = ModuleDefinition.FindType("Obleak.Fody.Core", "ObleakAttribute", obleakCore);
             if (obleakAttribute == null) throw new Exception("obleakAttribute is null");
@@ -142,7 +129,7 @@ namespace Obleak.Fody
                 if (!target.GetMethods().Any(m => m.Name == "Dispose" && !m.HasParameters))
                 {
                     // Not one locally get the one from one of the base classes and use it as a base definite
-                    var baseDispose = target.GetDisposeMehod();
+                    var baseDispose = target.GetDisposeMethod();
 
                     // Create a new empty dispose method to add to the target
                     var disposeMethod = new MethodDefinition(baseDispose.Name, baseDispose.Attributes, baseDispose.ReturnType)
@@ -166,7 +153,7 @@ namespace Obleak.Fody
                 }
 
                 // Find the dispose method and append the instructions at the end to clean up the composite disposable
-                var dispose = target.GetDisposeMehod();
+                var dispose = target.GetDisposeMethod();
 
                 dispose.Body.Emit(il =>
                 {

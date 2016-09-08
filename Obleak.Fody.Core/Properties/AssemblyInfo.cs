@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Obleak.Fody.Core")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Extension methods used to manage disposables")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("syrus")]
 [assembly: AssemblyProduct("Obleak.Fody.Core")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]

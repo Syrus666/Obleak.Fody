@@ -18,7 +18,7 @@ namespace Obleak.Fody
     }
 
     /// <summary>
-    /// Extension methods to reduce some of the bioler plate when working with Mono.Cecil.
+    /// Extension methods to reduce some of the boiler plate when working with Mono.Cecil.
     /// Several of these extension methods have been sourced, with love, from https://github.com/kswoll/ReactiveUI.Fody/blob/master/ReactiveUI.Fody/CecilExtensions.cs
     /// </summary>
     internal static class CecilExtensions
@@ -62,6 +62,22 @@ namespace Obleak.Fody
         }
 
         /// <summary>
+        /// Looks for the latest version of the name assembly within the AssemblyReferences of the ModuleDefinition.
+        /// If the assembly is not found any provided action is invoked
+        /// </summary>
+        /// <param name="moduleDefinition">The module definitiion to search</param>
+        /// <param name="assemblyFullName">Full name of the assembly</param>
+        /// <param name="onNotFound">Action to invoke if the assembly is not found</param>
+        /// <returns>The found assembly reference or null</returns>
+        internal static AssemblyNameReference FindAssembly(this ModuleDefinition moduleDefinition, string assemblyFullName, Action<string> onNotFound = null)
+        {
+            var assembly = moduleDefinition.AssemblyReferences.Where(x => x.Name == assemblyFullName).OrderByDescending(x => x.Version).FirstOrDefault();
+            if (assembly == null)
+                onNotFound?.Invoke($"Could not find assembly: {assemblyFullName} (" + string.Join(", ", moduleDefinition.AssemblyReferences.Select(x => x.Name)) + ")");
+            return assembly;
+        }
+
+        /// <summary>
         /// Calculate if the type, or any of it's base types implement the IDiposable interface
         /// </summary>
         internal static bool IsDisposable(this TypeDefinition type)
@@ -73,10 +89,12 @@ namespace Obleak.Fody
         /// <summary>
         /// Recurisively find the IDiposable.Dispose() implementation on a type
         /// </summary>
-        internal static MethodDefinition GetDisposeMehod(this TypeDefinition type)
+        internal static MethodDefinition GetDisposeMethod(this TypeDefinition type)
         {
+            if(!type.IsDisposable()) throw new Exception($"Type: {type.FullName} is not disposable");
+
             return type.GetMethods().FirstOrDefault(x => x.Name == "Dispose" && !x.HasParameters) ??
-                   type.BaseType.Resolve().GetDisposeMehod();
+                   type.BaseType.Resolve().GetDisposeMethod();
         }
 
         /// <summary>
