@@ -61,6 +61,49 @@ namespace Obleak.Fody
             return reference;
         }
 
+        // Taken from https://github.com/kswoll/ReactiveUI.Fody/blob/master/ReactiveUI.Fody/CecilExtensions.cs
+        public static bool IsAssignableFrom(this TypeReference baseType, TypeReference type, Action<string> logger = null)
+        {
+            return baseType.Resolve().IsAssignableFrom(type.Resolve(), logger);
+        }
+
+        // Taken from https://github.com/kswoll/ReactiveUI.Fody/blob/master/ReactiveUI.Fody/CecilExtensions.cs
+        public static bool IsAssignableFrom(this TypeDefinition baseType, TypeDefinition type, Action<string> logger = null)
+        {
+            logger = logger ?? (x => { });
+
+            Queue<TypeDefinition> queue = new Queue<TypeDefinition>();
+            queue.Enqueue(type);
+
+            while (queue.Any())
+            {
+                var current = queue.Dequeue();
+                logger(current.FullName);
+
+                if (baseType.FullName == current.FullName)
+                    return true;
+
+                if (current.BaseType != null)
+                    queue.Enqueue(current.BaseType.Resolve());
+
+                foreach (var @interface in current.Interfaces)
+                {
+                    queue.Enqueue(@interface.Resolve());
+                }
+            }
+
+            return false;
+        }
+
+        // Taken from https://github.com/kswoll/ReactiveUI.Fody/blob/master/ReactiveUI.Fody/CecilExtensions.cs
+        public static GenericInstanceMethod MakeGenericMethod(this MethodReference method, params TypeReference[] genericArguments)
+        {
+            var result = new GenericInstanceMethod(method);
+            foreach (var argument in genericArguments)
+                result.GenericArguments.Add(argument);
+            return result;
+        }
+
         /// <summary>
         /// Looks for the latest version of the name assembly within the AssemblyReferences of the ModuleDefinition.
         /// If the assembly is not found any provided action is invoked
@@ -95,6 +138,57 @@ namespace Obleak.Fody
 
             return type.GetMethods().FirstOrDefault(x => x.Name == "Dispose" && !x.HasParameters) ??
                    type.BaseType.Resolve().GetDisposeMethod();
+        }
+
+        /// <summary>
+        /// Finds the Dispose method which needs to be overriden on the base type of an inherticance hierarchy
+        /// </summary>
+        internal static MethodDefinition GetBaseDispose(this TypeDefinition type)
+        {
+            var typeRef = type.BaseType;
+            while (typeRef.Resolve().HasDisposeMethod())
+                typeRef = typeRef.Resolve().BaseType;
+
+            return typeRef.Resolve().GetDisposeMethod();
+        }
+
+        /// <summary>
+        /// Calculates if the @param type has a default dispose methods (so, no parameters)
+        /// </summary>
+        internal static bool HasDisposeMethod(this TypeDefinition type)
+        {
+            return type.GetMethods().Any(m => m.Name == "Dispose" && !m.HasParameters);
+        }
+
+        /// <summary>
+        /// Generates a dispose method for the type and adds it.
+        /// If the base dispose is not virtual, make it so.
+        /// </summary>
+        /// <param name="type"></param>
+        internal static void CreateDisposeMethod(this TypeDefinition type)
+        {
+            // Not one locally get the one from one of the base classes and use it as a base definite
+            var baseDispose = type.GetDisposeMethod();
+            baseDispose.IsVirtual = true;
+            baseDispose.IsReuseSlot = true;
+            baseDispose.IsHideBySig = true;
+
+            // Create a new empty dispose method to add to the target
+            var disposeMethod = new MethodDefinition(baseDispose.Name, baseDispose.Attributes, baseDispose.ReturnType)
+            {
+                IsVirtual = true,
+                IsReuseSlot = true,
+                IsHideBySig = true,
+                Body = new MethodBody(baseDispose)
+            };
+            disposeMethod.Body.Emit(il =>
+            {
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Call, baseDispose);
+                il.Emit(OpCodes.Ret);
+            });
+
+            type.Methods.Add(disposeMethod);
         }
 
         /// <summary>

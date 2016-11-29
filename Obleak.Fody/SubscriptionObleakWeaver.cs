@@ -126,31 +126,14 @@ namespace Obleak.Fody
                 // Does the target itself have a dispose method or is it inheriting the implementation? 
                 // If doesn't have one of it's own we need to add one and call the base.Dispose() as we need to clean up this
                 // new local composite disposable.
-                if (!target.GetMethods().Any(m => m.Name == "Dispose" && !m.HasParameters))
+                var hasDisposeMethod = target.HasDisposeMethod();
+                if (!hasDisposeMethod && target.HasGenericParameters)
                 {
-                    // Not one locally get the one from one of the base classes and use it as a base definite
-                    var baseDispose = target.GetDisposeMethod();
-
-                    // Create a new empty dispose method to add to the target
-                    var disposeMethod = new MethodDefinition(baseDispose.Name, baseDispose.Attributes, baseDispose.ReturnType)
-                    {
-                        IsVirtual = true,
-                        IsReuseSlot = true,
-                        IsHideBySig = true,
-                        Body = new MethodBody(baseDispose)
-                    };
-                    disposeMethod.Body.Emit(il =>
-                    {
-                        il.Emit(OpCodes.Ldarg_0);
-                        il.Emit(OpCodes.Call, baseDispose);
-                        il.Emit(OpCodes.Ret);
-                    });
-
-                    baseDispose.IsVirtual = true;
-                    baseDispose.IsReuseSlot = true;
-                    baseDispose.IsHideBySig = true;
-                    target.Methods.Add(disposeMethod);
+                    LogError($"Automatically generating a Dispose method for {target.Name} is not supported due to generics in it's inheritance hierarchy. " +
+                             $"You need to create an empty parameterless Dispose() and re-build to use the Obleak weavers");
+                    return;
                 }
+                if (!hasDisposeMethod) target.CreateDisposeMethod();
 
                 // Find the dispose method and append the instructions at the end to clean up the composite disposable
                 var dispose = target.GetDisposeMethod();

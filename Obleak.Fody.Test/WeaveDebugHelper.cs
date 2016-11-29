@@ -57,7 +57,18 @@ namespace Obleak.Fody.Test
 
                 subscriptionWeavingTask.Execute();
 
-                if(errors.Any()) throw new Exception("Errors raised by the weaving process: " + string.Join(", ", errors));
+                if (errors.Any()) throw new Exception("Errors raised by the weaving process: " + string.Join(", ", errors));
+
+                var reactiveCommandObleakTask = new ReactiveCommandObleakWeaver
+                {
+                    ModuleDefinition = moduleDefinition,
+                    LogInfo = s => warnings.Add(s),
+                    LogError = s => errors.Add(s),
+                };
+
+                reactiveCommandObleakTask.Execute();
+
+                if (errors.Any()) throw new Exception("Errors raised by the weaving process: " + string.Join(", ", errors));
 
                 moduleDefinition.Write(weavedAssemblyPath);
             }

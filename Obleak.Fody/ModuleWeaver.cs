@@ -22,6 +22,14 @@ namespace Obleak.Fody
                 LogError = LogError
             };
             subscriptionObleakWeaver.Execute();
+
+            var reactiveCommandObleakWeaver = new ReactiveCommandObleakWeaver
+            {
+                ModuleDefinition = ModuleDefinition,
+                LogInfo = LogInfo,
+                LogError = LogError
+            };
+            reactiveCommandObleakWeaver.Execute();
         }
     }
 }
