@@ -14,7 +14,7 @@ namespace Obleak.Fody.Test.Models
 {
     public class SingleConstructorSingleSubscribeModel : BaseModel
     {
-        [Obleak]
+        [SubscriptionObleak]
         public SingleConstructorSingleSubscribeModel()
         {
             DisposableTestContainer.Add(
@@ -24,14 +24,14 @@ namespace Obleak.Fody.Test.Models
 
     public class TwoConstructorsSingleSubscribeModel : BaseModel
     {
-        [Obleak]
+        [SubscriptionObleak]
         public TwoConstructorsSingleSubscribeModel()
         {
             DisposableTestContainer.Add(
                 this.WhenAnyValue(x => x.StringProperty).Subscribe());
         }
 
-        [Obleak]
+        [SubscriptionObleak]
         public TwoConstructorsSingleSubscribeModel(bool b)
         {
             DisposableTestContainer.Add(
@@ -41,7 +41,7 @@ namespace Obleak.Fody.Test.Models
 
     public class SingleConstructorThreeSubscribesModel : BaseModel
     {
-        [Obleak]
+        [SubscriptionObleak]
         public SingleConstructorThreeSubscribesModel()
         {
             DisposableTestContainer.Add(
@@ -57,7 +57,7 @@ namespace Obleak.Fody.Test.Models
 
     public class SingleComplexConstructorIheritedFromSingleConstructorThreeSubscribeModel : SingleConstructorThreeSubscribesModel
     {
-        [Obleak]
+        [SubscriptionObleak]
         public SingleComplexConstructorIheritedFromSingleConstructorThreeSubscribeModel()
         {
             var i = 5;
@@ -69,7 +69,7 @@ namespace Obleak.Fody.Test.Models
 
     public class TwoConstructorsOnlyOneWithObleakAttributeModel : BaseModel
     {
-        [Obleak]
+        [SubscriptionObleak]
         public TwoConstructorsOnlyOneWithObleakAttributeModel()
         {
             DisposableTestContainer.Add(

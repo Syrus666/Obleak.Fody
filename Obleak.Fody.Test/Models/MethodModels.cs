@@ -11,7 +11,7 @@ namespace Obleak.Fody.Test.Models
 {
     public class SingleMethodSingleSubscribeModel : BaseModel
     {
-        [Obleak]
+        [SubscriptionObleak]
         public void SingleMethod()
         {
             DisposableTestContainer.Add(
@@ -21,7 +21,7 @@ namespace Obleak.Fody.Test.Models
 
     public class SingleMethodWithOneObserableParameterTwoSubscribeModel : BaseModel
     {
-        [Obleak]
+        [SubscriptionObleak]
         public void SingleMethod(IObservable<string> observable)
         {
             DisposableTestContainer.Add(
@@ -34,14 +34,14 @@ namespace Obleak.Fody.Test.Models
 
     public class ThreeMethodsWithMultipleSubscribesModel : BaseModel
     {
-        [Obleak]
+        [SubscriptionObleak]
         public void MethodOne()
         {
             DisposableTestContainer.Add(
                 this.WhenAnyValue(x => x.StringProperty).Subscribe());
         }
 
-        [Obleak]
+        [SubscriptionObleak]
         public int MethodTwo(IObservable<string> observable)
         {
             DisposableTestContainer.Add(
@@ -50,7 +50,7 @@ namespace Obleak.Fody.Test.Models
             return 1;
         }
 
-        [Obleak]
+        [SubscriptionObleak]
         public IDisposable MethodThree()
         {
             var disposable = this.WhenAnyValue(x => x.StringProperty).Subscribe();
@@ -65,7 +65,7 @@ namespace Obleak.Fody.Test.Models
 
     public class TwoMethodsOnlyOneWithObleakAttributeModel : BaseModel
     {
-        [Obleak]
+        [SubscriptionObleak]
         public IDisposable MethodWithObleak()
         {
             var disposable = this.WhenAnyValue(x => x.StringProperty).Subscribe();

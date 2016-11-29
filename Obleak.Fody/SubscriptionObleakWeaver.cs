@@ -6,7 +6,7 @@ using Mono.Cecil.Rocks;
 
 namespace Obleak.Fody
 {
-    public class ObleakWeaver
+    public class SubscriptionObleakWeaver
     {
         private const string COMPOSITE_DISPOSABLE_FIELD_NAME = "$ObleakCompositeDisposable";
 
@@ -50,7 +50,7 @@ namespace Obleak.Fody
             var compositeDisposableCtor = ModuleDefinition.Import(compositeDisposableTypeResolved.Methods.Single(m => m.IsConstructor && !m.HasParameters));
             var compositeDisposableDisposeMethod = ModuleDefinition.Import(compositeDisposableTypeResolved.Methods.Single(m => m.Name == "Dispose"));
 
-            var obleakAttribute = ModuleDefinition.FindType("Obleak.Fody.Core", "ObleakAttribute", obleakCore);
+            var obleakAttribute = ModuleDefinition.FindType("Obleak.Fody.Core", "SubscriptionObleakAttribute", obleakCore);
             if (obleakAttribute == null) throw new Exception("obleakAttribute is null");
 
             var disposableExtensions = new TypeReference("Obleak.Fody.Core", "Extensions", ModuleDefinition, obleakCore).Resolve();

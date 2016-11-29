@@ -15,13 +15,13 @@ namespace Obleak.Fody
 
         public void Execute()
         {
-            var obleakWeaver = new ObleakWeaver
+            var subscriptionObleakWeaver = new SubscriptionObleakWeaver
             {
                 ModuleDefinition = ModuleDefinition,
                 LogInfo = LogInfo,
                 LogError = LogError
             };
-            obleakWeaver.Execute();
+            subscriptionObleakWeaver.Execute();
         }
     }
 }
