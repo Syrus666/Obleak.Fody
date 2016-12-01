@@ -11,7 +11,7 @@ namespace Obleak.Fody.Core
     /// Each property that is to be disposed will require this attribute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
-    public class ReactiveCommandObleakAttribute : Attribute
+    public class ObleakReactiveCommandAttribute : Attribute
     {
     }
 }

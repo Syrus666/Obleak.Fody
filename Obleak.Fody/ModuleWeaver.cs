@@ -15,7 +15,7 @@ namespace Obleak.Fody
 
         public void Execute()
         {
-            var subscriptionObleakWeaver = new SubscriptionObleakWeaver
+            var subscriptionObleakWeaver = new ObleakSubscriptionWeaver
             {
                 ModuleDefinition = ModuleDefinition,
                 LogInfo = LogInfo,
@@ -23,7 +23,7 @@ namespace Obleak.Fody
             };
             subscriptionObleakWeaver.Execute();
 
-            var reactiveCommandObleakWeaver = new ReactiveCommandObleakWeaver
+            var reactiveCommandObleakWeaver = new ObleakReactiveCommandWeaver
             {
                 ModuleDefinition = ModuleDefinition,
                 LogInfo = LogInfo,

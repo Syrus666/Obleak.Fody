@@ -48,7 +48,7 @@ namespace Obleak.Fody.Test
 
                 var moduleDefinition = ModuleDefinition.ReadModule(weavedAssemblyPath, readerParameters);
 
-                var subscriptionWeavingTask = new SubscriptionObleakWeaver
+                var subscriptionWeavingTask = new ObleakSubscriptionWeaver
                 {
                     ModuleDefinition = moduleDefinition,
                     LogInfo = s => warnings.Add(s),
@@ -59,7 +59,7 @@ namespace Obleak.Fody.Test
 
                 if (errors.Any()) throw new Exception("Errors raised by the weaving process: " + string.Join(", ", errors));
 
-                var reactiveCommandObleakTask = new ReactiveCommandObleakWeaver
+                var reactiveCommandObleakTask = new ObleakReactiveCommandWeaver
                 {
                     ModuleDefinition = moduleDefinition,
                     LogInfo = s => warnings.Add(s),

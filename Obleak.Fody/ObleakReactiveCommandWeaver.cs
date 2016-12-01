@@ -6,7 +6,7 @@ using Mono.Cecil.Rocks;
 
 namespace Obleak.Fody
 {
-    public class ReactiveCommandObleakWeaver
+    public class ObleakReactiveCommandWeaver
     {
         public ModuleDefinition ModuleDefinition { get; set; }
 
@@ -37,7 +37,7 @@ namespace Obleak.Fody
 
             var reactiveCommandType = new TypeReference("ReactiveUI", "IReactiveCommand", ModuleDefinition, reactiveUiCore);
 
-            var obleakCommandAttribute = ModuleDefinition.FindType("Obleak.Fody.Core", "ReactiveCommandObleakAttribute", obleakCore);
+            var obleakCommandAttribute = ModuleDefinition.FindType("Obleak.Fody.Core", "ObleakReactiveCommandAttribute", obleakCore);
             if (obleakCommandAttribute == null) throw new Exception("obleakCommandAttribute is null");
 
             // Any class where the ObleakCommand attribute appears on a proeprty

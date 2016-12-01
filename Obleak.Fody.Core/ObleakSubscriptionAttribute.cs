@@ -15,7 +15,7 @@ namespace Obleak.Fody.Core
     /// </summary>
     /// <remarks>Only works on classes which implemented IDisposable</remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor | AttributeTargets.Method)]
-    public class SubscriptionObleakAttribute : Attribute
+    public class ObleakSubscriptionAttribute : Attribute
     {
     }
 }
