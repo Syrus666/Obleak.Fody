@@ -90,9 +90,12 @@
   <ItemGroup>
     <Compile Include="ClassModelTests.cs" />
     <Compile Include="ConstructorModelTests.cs" />
+    <Compile Include="Helpers\ReactiveCommandDecorator.cs" />
     <Compile Include="MethodModelTests.cs" />
     <Compile Include="Models\ClassModels.cs" />
     <Compile Include="Models\MethodModels.cs" />
+    <Compile Include="Models\ReactiveCommandModels.cs" />
+    <Compile Include="ReactiveCommandModelTests.cs" />
     <Compile Include="WeaveDebugHelper.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\ConstructorModels.cs" />

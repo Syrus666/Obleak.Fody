@@ -9,7 +9,7 @@ using ReactiveUI;
 
 namespace Obleak.Fody.Test.Models
 {
-    [Obleak]
+    [ObleakSubscription]
     public class ClassSingleConstructorTwoMethods : BaseModel
     {
         public ClassSingleConstructorTwoMethods()
@@ -33,7 +33,7 @@ namespace Obleak.Fody.Test.Models
         }
     }
 
-    [Obleak]
+    [ObleakSubscription]
     public class ComplexClass : ClassSingleConstructorTwoMethods
     {
         private int _intValue = 10;
@@ -47,7 +47,7 @@ namespace Obleak.Fody.Test.Models
                 this.WhenAnyValue(x => x.StringProperty).Subscribe());
         }
 
-        [Obleak] // This attribute is irrelevant as it's on the class
+        [ObleakSubscription] // This attribute is irrelevant as it's on the class
         public ComplexClass(string s) : base(s)
         {
             SerialDisposable = new SerialDisposable();
